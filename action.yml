@@ -30,11 +30,13 @@ runs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
     - name: Log the new image ID that will go into the Amazon ECS task definition
+      shell: bash
       run: |
         echo "Patch version: ${{ inputs.patchVersion }}"
         echo "into env ${{ inputs.environment }}
     - name: Download task definition - and excise env vars
       id: task-definition-download
+      shell: bash
       run: |
         taskDefinition=${{ inputs.task_definition_name }}
         aws ecs describe-task-definition --task-definition ${taskDefinition} --query taskDefinition > TaskDefinition.json
