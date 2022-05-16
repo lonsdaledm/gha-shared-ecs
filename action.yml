@@ -1,16 +1,16 @@
 name: 'Test AWS'
 description: 'Test AWS'
 inputs:
+  environment:
+    description: 'environment - used to switch'
+    required: true
   aws_access_key:  # id of input
     description: 'aws_access_key'
     required: true
-  aws_secret_access_key:  # id of input
+  aws_secret_access_key:
     description: 'aws_secret_access_key'
     required: true
-outputs:
-  random-number:
-    description: "Random number"
-    value: ${{ steps.random-number-generator.outputs.random-number }}
+
 runs:
   using: "composite"
   steps:
@@ -19,17 +19,10 @@ runs:
       with:
         aws_access_key: ${{ inputs.aws_access_key }}
         aws_secret_access_key: ${{ inputs.aws_secret_access_key }}
-        # aws-region: us-east-1
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
-    - id: random-number-generator
-      run: echo "::set-output name=random-number::$(echo $RANDOM)"
-      shell: bash
-    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
-      shell: bash          
-    - run: goodbye.sh
-      shell: bash
+
 
 # name: 'Hello World'
 # description: 'Greet someone'
