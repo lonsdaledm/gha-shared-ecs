@@ -16,7 +16,9 @@ inputs:
   task_definition_name:
     description: "name of the task definition"
     required: true
-  
+  aws_region:
+    description: "usually us-east-1"
+    required: true  
 
 runs:
   using: "composite"
@@ -24,8 +26,9 @@ runs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws_access_key: ${{ inputs.aws_access_key }}
-        aws_secret_access_key: ${{ inputs.aws_secret_access_key }}
+        aws-access-key: ${{ inputs.aws_access_key }}
+        aws-secret-access_key: ${{ inputs.aws_secret_access_key }}
+        aws-region: ${{ inputs.aws_region }}
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1

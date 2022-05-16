@@ -1,0 +1,2 @@
+git tag -f -a v3
+git push -f --tags
