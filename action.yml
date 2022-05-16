@@ -36,7 +36,7 @@ runs:
       shell: bash
       run: |
         echo "Patch version: ${{ inputs.patchVersion }}"
-        echo "into env ${{ inputs.environment }}
+        echo "into env ${{ inputs.environment }}"
     - name: Download task definition - and excise env vars
       id: task-definition-download
       shell: bash
