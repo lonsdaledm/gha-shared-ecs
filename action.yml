@@ -10,6 +10,13 @@ inputs:
   aws_secret_access_key:
     description: 'aws_secret_access_key'
     required: true
+  patchVersion:
+    description: "version to patch"
+    required: true
+  task_definition_name:
+    description: "name of the task definition"
+    required: true
+  
 
 runs:
   using: "composite"
@@ -22,6 +29,17 @@ runs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
+    - name: Log the new image ID that will go into the Amazon ECS task definition
+      run: |
+        echo "Patch version: ${{ inputs.patchVersion }}"
+        echo "into env ${{ inputs.environment }}
+    - name: Download task definition - and excise env vars
+      id: task-definition-download
+      run: |
+        taskDefinition=${{ inputs.task_definition_name }}
+        aws ecs describe-task-definition --task-definition ${taskDefinition} --query taskDefinition > TaskDefinition.json
+        # then remove env vars
+        aws ecs describe-task-definition --task-definition ${taskDefinition} --query taskDefinition | jq 'del(.containerDefinitions[0].environment)' | jq 'del(.containerDefinitions[1].environment)' > tempTaskDefinition.json
 
 
 # name: 'Hello World'
