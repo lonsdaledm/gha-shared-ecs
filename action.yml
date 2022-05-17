@@ -71,12 +71,12 @@ runs:
           task-definition: TaskDefinition.json
           container-name: ${{ inputs.container_name }}
           image: ${{ inputs.image }}
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ inputs.service_name }}
-          cluster: ${{ inputs.cluster_name }}
+      # - name: Deploy Amazon ECS task definition
+      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      #   with:
+      #     task-definition: ${{ steps.task-def.outputs.task-definition }}
+      #     service: ${{ inputs.service_name }}
+      #     cluster: ${{ inputs.cluster_name }}
       - name: Pushes task definition file to infra repo
         uses: dmnemec/copy_file_to_another_repo_action@main
         env:
