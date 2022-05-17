@@ -60,7 +60,7 @@ runs:
       shell: bash
       run: |
         echo "${{ inputs.task_definition_name }}"
-        taskDefinition="${{ inputs.task_definition_name }}"
+        taskDefinition=${{ inputs.task_definition_name }}
         aws ecs describe-task-definition --task-definition ${taskDefinition} --query taskDefinition > TaskDefinition.json
         # then remove env vars
         aws ecs describe-task-definition --task-definition ${taskDefinition} --query taskDefinition | jq 'del(.containerDefinitions[0].environment)' | jq 'del(.containerDefinitions[1].environment)' > tempTaskDefinition.json
