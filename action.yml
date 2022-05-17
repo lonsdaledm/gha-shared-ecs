@@ -18,7 +18,25 @@ inputs:
     required: true
   aws_region:
     description: "usually us-east-1"
-    required: true  
+    required: true
+  image:
+    description: "image id"
+    required: true
+  container_name:
+    description: "container name"
+    required: true
+  service:
+    description: "service"
+    required: true
+  cluster:
+    description: "cluster name"
+    required: true
+  INFRABOT_GITHUB_TOKEN:
+    description: "for slack"
+    required: true
+  destination_folder:
+    description: "where to put the manifest in the infra repo"
+    required: true
 
 runs:
   using: "composite"
@@ -46,7 +64,29 @@ runs:
         aws ecs describe-task-definition --task-definition ${taskDefinition} --query taskDefinition > TaskDefinition.json
         # then remove env vars
         aws ecs describe-task-definition --task-definition ${taskDefinition} --query taskDefinition | jq 'del(.containerDefinitions[0].environment)' | jq 'del(.containerDefinitions[1].environment)' > tempTaskDefinition.json
-
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: TaskDefinition.json
+          container-name: ${{ inputs.container_name }}
+          image: ${{ inputs.image }}
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ inputs.service_name }}
+          cluster: ${{ inputs.cluster_name }}
+      - name: Pushes task definition file to infra repo
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ inputs.INFRABOT_GITHUB_TOKEN }}
+        with:
+          source_file: 'tempTaskDefinition.json'
+          user_email: 'paul@lonsdaleinvest.com'
+          user_name: 'pk-lit'
+          destination_repo: 'lonsdaledm/infra'
+          destination_folder: ${{ inputs.destination_folder }}
 
 # name: 'Hello World'
 # description: 'Greet someone'
