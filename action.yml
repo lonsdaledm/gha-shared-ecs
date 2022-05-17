@@ -41,6 +41,7 @@ runs:
       id: task-definition-download
       shell: bash
       run: |
+      echo "${{ inputs.task_definition_name }}"
         taskDefinition="${{ inputs.task_definition_name }}"
         aws ecs describe-task-definition --task-definition ${taskDefinition} --query taskDefinition > TaskDefinition.json
         # then remove env vars
