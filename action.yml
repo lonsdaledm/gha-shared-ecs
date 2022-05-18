@@ -1,5 +1,5 @@
-name: 'Test AWS'
-description: 'Test AWS'
+name: 'Deploy to ECS'
+description: 'A shared github action to deploy to ECS'
 inputs:
   environment:
     description: 'environment - used to switch'
